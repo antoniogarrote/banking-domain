@@ -1,0 +1,577 @@
+uses:
+  domain: http://localhost:8081/publishers/antoniogarrote/projects/raml-domain/versions/current/index.raml
+
+
+(domain.base): "http://acme-banking/vocabulary/agents#"
+
+usage: Entities in the financial domain
+
+annotationTypes:
+
+  # Classes
+
+  FinancialProduct:
+    displayName: Financial Product
+    description: |
+      A product provided to consumers and businesses by financial institutions such as banks, insurance companies,
+      brokerage firms, consumer finance companies, and investment companies which comprise the financial services industry.
+    (domain.inherits):
+      - (domain.Class)
+    (domain.literalProperties):
+      - (productId)
+      - (leiCode)
+      - (feesAndComissionsSpecification)
+      - (reviewState)
+    (domain.objectProperties):
+      - (provider)
+      - (broker)
+      - (interestRate)
+      - (annualPercentageRate)
+      - (productBuyer)
+
+  BankAccount:
+    displayName: Bank Account
+    description: |
+      A product or service offered by a bank whereby one may deposit, withdraw or transfer money and in some
+      cases be paid interest.
+    (domain.inherits):
+      - (FinancialProduct)
+    (domain.literalProperties):
+      - (accountNumber)
+      - (accountType)
+    (domain.objectProperties):
+      - (accountHolder)
+      - (amount)
+      - (accountMinimumInflow)
+      - (accountOverdraftLimit)
+
+  LoanOrCredit:
+    displayName: Loan or Credit
+    description: A financial product for the loaning of an amount of money under agreed terms and charges.
+    (domain.inherits):
+      - (FinancialProduct)
+    (domain.literalProperties):
+      - (requiredCollateral)
+      - (loanType)
+    (domain.objectProperties):
+      - (amount)
+      - (loanTerm)
+      - (loanRepaymentForm)
+      - (gracePeriod)
+
+  PaymentCard:
+    displayName: PaymentCard
+    description: A payment method using a credit, debit, store or other card to associate the payment with an account.
+    (domain.inherits):
+      - (FinancialProduct)
+    (domain.literalProperties):
+      - (cashBack)
+      - (contactlessPayment)
+      - (floorLimit)
+
+  CreditCard:
+    displayName: Credit Card
+    description: |
+      A card payment method of a particular brand or name. Used to mark up a particular payment method
+      and/or the financial product/service that supplies the card account.
+    (domain.inherits):
+      - (LoanOrCredit)
+      - (PaymentCard)
+
+  LoanRepayment:
+    displayName: Loan Repayment
+    description: Repayment of the live principal and interest of a loan
+    (domain.inherits): (domain.Class)
+    (domain.literalProperties):
+      - (date)
+    (domain.objectProperties):
+      - (paymentOf)
+      - (principalRepaid)
+      - (interestRepaid)
+      - (amount)
+
+
+  LegalPerson:
+    displayName: Legal Person
+    description: Any entity which can incur legal obligation and can be sued at law.
+    (domain.inherits):
+      - (domain.Class)
+    (domain.literalProperties):
+      - (customerId)
+      - (lei)
+      - (name)
+      - (taxId)
+      - (vatId)
+      - (email)
+      - (telephone)
+    (domain.objectProperties):
+      - (address)
+
+
+  Organization:
+    displayName: Organization
+    description: |
+      A social unit of people, systematically structured and managed to meet a need or pursue collective goals
+      on a continuing basis.
+    (domain.inherits):
+      - (LegalPerson)
+
+
+  Person:
+    displayName: Person
+    description: |
+      Person who has attained the age of majority as defined by given jurisdiction and is allowed to conduct a business
+      or any other occupation on his or her own behalf or for their own account.
+    (domain.inherits):
+      - (LegalPerson)
+    (domain.literalProperties):
+      - (title)
+      - (familiyName)
+      - (gender)
+      - (birthDate)
+      - (deathDate)
+
+  Address:
+    displayName: Address
+    description: A mailing address.
+    (domain.inherits): (domain.Class)
+    (domain.literalProperties):
+      - (addressCountry)
+      - (addressLocality)
+      - (addressRegion)
+      - (postalCode)
+      - (streetAddress)
+
+  StructuredValue:
+    displayName: Structured Value
+    description: |
+      Structured values are used when the value of a property has a more complex structure than simply being a textual
+      value or a reference to another thing.
+      (domain.inherits):
+        - (domain.Class)
+      (domain.literalProperties):
+        - (value)
+
+  RepaymentSpecification:
+    displayName: Repayment Specification
+    description: A structured value representing repayment.
+    (domain.inherits):
+      - (StructuredValue)
+    (domain.literalProperties):
+      - (loanPaymentFrequency)
+      - (numberOfLoanPayments)
+    (domain.objectProperties):
+      - (downPayment)
+      - (earlyPrepaymentPenalty)
+      - (loanPaymentAmount)
+
+  MonetaryAmount:
+    displayName: Monetary Amount
+    description: |
+      A monetary value or range. This type can be used to describe an amount of money such as $50 USD, or a range as in
+      describing a bank account being suitable for a balance between £1,000 and £1,000,000 GBP, or the value of a salary,
+      etc.
+    (domain.inherits):
+      - (StructuredValue)
+    (domain.literalProperties):
+      - (currency)
+
+  Duration:
+    displayName: Duration
+    description: Duration (use ISO 8601 duration format).
+
+  # Properties
+
+  id:
+    displayName: system id
+    description: Identifier of the entity in different processing systems
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): string
+
+  name:
+    displayName: name
+    description: The official name of the entity, e.g. the registered company name.
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): string
+
+  leiCode:
+      displayName: legal entity identifier (LEI)
+      description: An organization identifier that uniquely identifies a legal entity as defined in ISO 17442.
+      (domain.inherits):
+        - (domain.LiteralProperty)
+      (domain.range): string
+
+  email:
+    displayName: email
+    description: Email address.
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): string
+
+  telephone:
+    displayName: telephone
+    description: Telephone number
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): string
+
+  address:
+    displayName: address
+    description: Physical address of the entity.
+    (domain.inherits):
+      - (domain.ObjectProperty)
+    (domain.range): (Address)
+
+  addressCountry:
+    displayName: address country
+    description: The country. For example, USA. You can also provide the two-letter ISO 3166-1 alpha-2 country code.
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): string
+
+  addressLocality:
+    displayName: address locality
+    description: The locality. For example, Mountain View
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): string
+
+  addressRegion:
+    displayName: address region
+    description: The region. For example, CA.
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): string
+
+  postalCode:
+    displayName: postal code
+    description: The postal code. For example, 94043.
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): string
+
+  streetAddress:
+    displayName: street address
+    description: The street address. For example, 1600 Amphitheatre Pkwy.
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): string
+
+  vatId:
+    displayName: VAT identifier
+    description: The Value-added Tax ID of the organization or person.
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): string
+
+  taxId:
+    displayName: tax identifier
+    description: The Tax / Fiscal ID of the organization or person, e.g. the TIN in the US or the CIF/NIF in Spain.
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): string
+
+  title:
+    displayName: title
+    description: Salutation for a person
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): string
+
+  customerId:
+    displayName: customer id
+    description: Internal ID used to identify a customer in our systems
+    (domain.inherits):
+      - (id)
+    (domain.range): string
+
+  feesAndComissionsSpecification:
+    displayName: fees and comssions
+    description: |
+      Description of fees, commissions, and other terms applied either to a class of financial product,
+      or by a financial service organization
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): string
+
+  reviewState:
+    displayName: reviewState
+    description: Status of the service in the progress from request to approval
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): string
+
+  provider:
+    displayName: provider
+    description: |
+      The service provider, service operator, or service performer; the goods producer.
+      Another party (a seller) may offer those services or goods on behalf of the provider.
+    (domain.inherits):
+      - (domain.ObjectProperty)
+    (domain.range): (agents.Organization)
+
+  broker:
+    displayName: broker
+    description: |
+      An entity that arranges for an exchange between a buyer and a seller.
+      In most cases a broker never acquires or releases ownership of a product or service involved in an exchange.
+      If it is not clear whether an entity is a broker, seller, or buyer, the latter two terms are preferred.
+    (domain.inherits):
+      - (domain.ObjectProperty)
+    (domain.range): (agents.LegalPerson)
+
+  interestRate:
+    displayName: interest rate
+    description: |
+      The interest rate, charged or paid, applicable to the financial product.
+      This is different from the calculated annualPercentageRate.
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): float
+
+  annualPercentageRate:
+    displayName: annual percentage rate
+    description: |
+      The annual rate that is charged for borrowing (or made by investing), expressed as a single percentage number that
+      represents the actual yearly cost of funds over the term of a loan. This includes any fees or additional costs
+      associated with the transaction.
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): float
+
+  accountNumber:
+    displayName: account number
+    description: |
+      an identifier assigned to each client account for ease in referring to that party activity
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): string
+
+  accountType:
+    displayName: account type
+    description: The type of an account.
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): string
+
+  productBuyer:
+    displayName: product buyer
+    description: a party that has purchased a particular product or service
+    (domain.inherits):
+      - (domain.ObjectProperty)
+    (domain.range): (agents.LegalPerson)
+
+  accountHolder:
+    displayName: account holder
+    description: a party holding an account
+    (domain.inherits):
+      - (productBuyer)
+
+  buyerOf:
+    displayName: buys
+    description: purchase of a particular product or service
+    (domain.inherits):
+      - (domain.ObjectProperty)
+    (domain.range): (FinancialProduct)
+    (domain.domain): (agents.LegalPerson)
+
+  holds:
+    displayName: holds
+    description: holds an account
+    (domain.inherits):
+      - (domain.ObjectProperty)
+    (domain.range): (BankAccount)
+    (domain.domain): (agents.LegalPerson)
+
+  amount:
+    displayName: amount
+    description: The amount of money.
+    (domain.inherits):
+      - (domain.ObjectProperty)
+    (domain.range): (quantities.MonetaryAmount)
+
+  accountMinimumInflow:
+    displayName: account minimum in-flow
+    description: A minimum amount that has to be paid in every month.
+    (domain.inherits):
+      - (domain.ObjectProperty)
+    (domain.range): (quantities.MonetaryAmount)
+
+  accountOverdraftLimit:
+    displayName: account overdraft limit
+    description: |
+      An overdraft is an extension of credit from a lending institution when an account reaches zero.
+      An overdraft allows the individual to continue withdrawing money even if the account has no funds in it.
+      Basically the bank allows people to borrow a set amount of money.
+    (domain.inherits):
+      - (domain.ObjectProperty)
+    (domain.range): (quantities.MonetaryAmount)
+
+  requiredCollateral:
+    displayName: required collateral
+    description: |
+      Assets required to secure loan or credit repayments.
+      It may take form of third party pledge, goods, financial instruments (cash, securities, etc.).
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): string
+
+  loanType:
+    displayName: loan type
+    description: the type of the loan.
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): string
+
+  loanTerm:
+    displayName: loan term
+    description: The duration of the loan or credit agreement.
+    (domain.inherits):
+      - (domain.ObjectProperty)
+    (domain.range): (quantities.Duration)
+
+  loanRepaymentForm:
+    displayName: loan repayment form
+    description: |
+      A form of paying back money previously borrowed from a lender. Repayment usually takes the form of periodic
+      payments that normally include part principal plus interest in each payment.
+    (domain.inherits):
+      - (domain.ObjectProperty)
+    (domain.range): (quantities.RepaymentSpecification)
+
+  gracePeriod:
+    displayName: grace period
+    description: |
+      The period of time after any due date that the borrower has to fulfil its obligations before a default
+      (failure to pay) is deemed to have occurred.
+    (domain.inherits):
+      - (domain.ObjectProperty)
+    (domain.range): (quantities.Duration)
+
+  cashBack:
+    displayName: cash-back
+    description: |
+      A cardholder benefit that pays the cardholder a small percentage of their net expenditures.
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): boolean
+
+  contactlessPayment:
+    displayName: contactless payment
+    description: |
+      A secure method for consumers to purchase products or services via debit, credit or smartcards by using
+      RFID or NFC technology.
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): boolean
+
+  floorLimit:
+    displayName: floor limit
+    description: |
+      A floor limit is the amount of money above which credit card transactions must be authorized.
+    (domain.inherits):
+      - (domain.ObjectProperty)
+    (domain.range): (quantities.MonetaryAmount)
+
+  customerId:
+    displayName: product id
+    description: Internal ID used to identify a FinancialProduct in our systems
+    (domain.inherits):
+      - (id)
+    (domain.range): string
+
+  paymentOf:
+    displayName: payment of
+    description: Product or service being paid
+    (domain.inherits):
+      - (domain.ObjectProperty)
+    (domain.range): (domain.FinancialProduct)
+
+  principalRepaid:
+    displayName: principal repaid
+    description: Amount of a loan principle being repaid
+    (domain.inherits):
+      - (domain.ObjectProperty)
+    (domain.range): (quantities.MonetaryAmount)
+
+  interestRepaid:
+    displayName: interest repaid
+    description: Amount of a loan interest being repaid
+    (domain.inherits):
+      - (domain.ObjectProperty)
+    (domain.range): (quantities.MonetaryAmount)
+
+  value:
+    displayName: value
+    description: The value of the quantitative value or property value node.
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): any
+
+  loanPaymentFrequency:
+    displayName: loan payment frequency
+    description: |
+      Frequency of payments due, i.e. number of months between payments. This is defined as a frequency,
+      i.e. the reciprocal of a period of time.
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): number
+
+  numberOfLoanPayments:
+    displayName: number of loan payments
+    description: |
+      The number of payments contractually required at origination to repay the loan. For monthly paying loans this is
+      the number of months from the contractual first payment date to the maturity date.
+    (domain.inherits):
+      - (domain.LiteralProperty)
+    (domain.range): number
+
+  downPayment:
+    displayName: down payment
+    description: |
+      a type of payment made in cash during the onset of the purchase of an expensive good/service.
+      The payment typically represents only a percentage of the full purchase price.
+    (domain.inherits): (domain.ObjectProperty)
+    (domain.range): MonetaryAmount
+
+  earlyPrepaymentPenalty:
+    displayName: early penalty
+    description: The amount to be paid as a penalty in the event of early payment of the loan.
+    (domain.inherits): (domain.ObjectProperty)
+    (domain.range): MonetaryAmount
+
+  loanPaymentAmount:
+    displayName: loan payment amount
+    description: The amount of money to pay in a single payment.
+    (domain.inherits): (domain.ObjectProperty)
+    (domain.range): MonetaryAmount
+
+  currency:
+    displayName: currency
+    description: The currency in which the monetary amount is expressed (in 3-letter ISO 4217 format).
+    (domain.inherits): (domain.LiteralProperty)
+    (domain.range): string
+
+types:
+
+  MonetaryAmountData:
+    (domain.class): (MonetaryAmount)
+    properties:
+      value: number
+      currency: string
+
+  DurationData:
+    (domain.class): (Duration)
+    properties:
+      value: string
+
+  RepaymentSpecificationData:
+    (domain.class): (RepaymentSpecification)
+    properties:
+      down_payment: MonetaryAmountData
+      payment_frequency: number
+      number_payments: integer
+      payment_amount: MonetaryAmountData
+      early_payment_penalty: MonetaryAmountData
